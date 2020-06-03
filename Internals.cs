@@ -11,25 +11,31 @@ namespace SecretPM
         {
             encryption enc = new encryption();
             generatekey gen = new generatekey();
+            
             string outp = "Please enter a valid selection!";
             string key = gen.generatePrivate();
             string iv = gen.generateIV();
+            string breaker = gen.generatebreak();
             Console.WriteLine("Would you like to secure(1), read text(2) or exit(3)?");
             string a = Console.ReadLine().ToString();
             if (a == "1")//Encrypt
             {
                 Console.Write("Please enter the text you would like to secure: ");
                 byte[] ToEncrypt = Encoding.ASCII.GetBytes(Console.ReadLine().ToString());
-                outp = key + ":" + iv + ":" + Convert.ToBase64String(encryption.encryptdata(ToEncrypt, key, iv));
+                outp = breaker+key + breaker+ iv +breaker+ Convert.ToBase64String(encryption.encryptdata(ToEncrypt, key, iv));
             }
             if (a == "2")
             {
 
                 Console.Write("Please enter the text you would like to read: ");
-                string[] readd = Console.ReadLine().ToString().Split(":");
+                string inp1 = Console.ReadLine().ToString();
+                breaker = inp1.Substring(0,1);
+                string avc = inp1.Substring( 1);
+                string[] readd = avc.Split(breaker);
                 key = readd[0];
                 iv = readd[1];
-                outp = Encoding.ASCII.GetString(encryption.decryptdata(Convert.FromBase64String(readd[2]),key,iv));
+                string todecrup = readd[2];
+                outp = Encoding.ASCII.GetString(encryption.decryptdata(Convert.FromBase64String(todecrup), key, iv));
 
             }
             if (a == "3")
@@ -46,6 +52,16 @@ namespace SecretPM
     }
     class generatekey
     {
+        public string  generatebreak()
+        {
+            Random rnd = new Random();
+            using (SHA1 sHA = SHA1.Create())
+            {
+           byte[] input = Encoding.ASCII.GetBytes(rnd.Next(0, 999999999).ToString());
+                return Convert.ToBase64String(sHA.ComputeHash(input)).Substring(0, 1);
+            }
+
+        }
         public string generatePrivate()
         {
             Random rnd = new Random();
