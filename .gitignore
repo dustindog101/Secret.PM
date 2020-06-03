@@ -1,0 +1,5 @@
+
+.vs/SecretPM/v16/Server/sqlite3/storage.ide-wal
+*.lock
+*.ide
+.vs/SecretPM/v16/Server/sqlite3/storage.ide-shm
